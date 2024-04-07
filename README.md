@@ -17,7 +17,7 @@ _ | A | _ | _ | _ | _ | _
 
 The letter A represents the agent, the letter M represents the machine, the letter O represents objects to be caught by the machine, X's are obstacles, underlines are empty spaces and E represents the exit. The goal of the game is for the agent to push the machine in order to catch all the objects (the machine should be in the same cell as the object for that to happen), and then, push the machine towards the exit. The agent can only move up, down, right or left.
 
-** Features **
+## Features
 
 - Multiple Scenarios: The solver includes three predefined board configurations (scenarios) that represent different levels of complexity in the Sokoban game.
 - Interactive Selection: Users can select the scenario they wish to solve and the search algorithm to use through a simple console interface.

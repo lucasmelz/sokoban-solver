@@ -144,7 +144,16 @@ public class Main {
         System.out.println("Select an example (1, 2, or 3):");
         int exampleSelection = scanner.nextInt();
 
-        System.out.println("Select a search algorithm (1 for BFS, 2 for DFS, 3 for AStar):");
+        System.out.println("Select a search algorithm:");
+        System.out.println("1 - Optimized breadth first search (ignore repeated states).");
+        System.out.println("2 - Non-optimized breadth first search (consider repeated states).");
+        System.out.println("3 - Optimized depth first search (ignore repeated states).");
+        System.out.println("4 - Non-optimized depth first search (consider repeated states).");
+        System.out.println(
+                "5 - A* with optimized heuristics: Manhattan distance to nearest object or Manhattan distance to the exit if there aren't any objects.");
+        System.out.println(
+                "6 - A* with non-optimized heuristics: Manhattan distance to the exit plus the number of remaining objects.");
+
         int algorithmSelection = scanner.nextInt();
 
         Example example = null;
@@ -166,18 +175,28 @@ public class Main {
         SokobanProblem problem = new SokobanProblem(example.dimension, example.exit);
         List<State> solutionPath = null;
 
+        BreadthFirstSearch<State> bfs = new BreadthFirstSearch<>();
+        DepthFirstSearch<State> dfs = new DepthFirstSearch<>();
+        AStarSearch aStarSearch = new AStarSearch();
+
         switch (algorithmSelection) {
             case 1:
-                BreadthFirstSearch<State> bfs = new BreadthFirstSearch<>();
-                solutionPath = bfs.search(problem, example.initialState);
+                solutionPath = bfs.search(problem, example.initialState, false);
                 break;
             case 2:
-                DepthFirstSearch<State> dfs = new DepthFirstSearch<>();
-                solutionPath = dfs.search(problem, example.initialState);
+                solutionPath = bfs.search(problem, example.initialState, true);
                 break;
             case 3:
-                AStarSearch aStarSearch = new AStarSearch();
-                solutionPath = aStarSearch.search(problem, example.initialState);
+                solutionPath = dfs.search(problem, example.initialState, false);
+                break;
+            case 4:
+                solutionPath = dfs.search(problem, example.initialState, true);
+                break;
+            case 5:
+                solutionPath = aStarSearch.search(problem, example.initialState, true);
+                break;
+            case 6:
+                solutionPath = aStarSearch.search(problem, example.initialState, false);
                 break;
             default:
                 System.out.println("Invalid search algorithm selection.");

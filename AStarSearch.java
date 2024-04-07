@@ -7,7 +7,10 @@ public class AStarSearch {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
-    // Method to calculate the heuristic for a given state
+    // This heuristic is the Manhattan distance from the machine to the nearest
+    // object,
+    // and if there are no objects, the Manhattan distance from the machine to the
+    // exit.
     private static int calculateHeuristic(State state, Position exit) {
         int nearestObjectDistance = Integer.MAX_VALUE;
         if (state.objectPositions.length > 0) {
@@ -23,7 +26,13 @@ public class AStarSearch {
         }
     }
 
-    public List<State> search(SokobanProblem problem, State initialState) {
+    // This heuristic is the Manhattan distance from the machine to the exit
+    // plus the number of objects left to collect.
+    private static int calculateHeuristic2(State state, Position exit) {
+        return manhattanDistance(state.machinePosition, exit) + state.objectPositions.length;
+    }
+
+    public List<State> search(SokobanProblem problem, State initialState, boolean optimizedHeuristic) {
         PriorityQueue<Node<State>> frontier = new PriorityQueue<>(Comparator.comparingInt(Node::getTotalCost));
         Map<State, Integer> costSoFar = new HashMap<>(); // Tracks the cost of the cheapest path to a state
         Map<State, State> cameFrom = new HashMap<>(); // Tracks the best parent for each visited state
@@ -56,7 +65,9 @@ public class AStarSearch {
                 int newCost = costSoFar.get(currentState) + nextNode.getCost();
                 if (!costSoFar.containsKey(nextState) || newCost < costSoFar.get(nextState)) {
                     costSoFar.put(nextState, newCost);
-                    int priority = newCost + calculateHeuristic(nextState, problem.exit);
+                    int heuristic = optimizedHeuristic ? calculateHeuristic(nextState, problem.exit)
+                            : calculateHeuristic2(nextState, problem.exit);
+                    int priority = newCost + heuristic;
                     frontier.add(new Node<>(nextState, currentNode, newCost, priority));
                     cameFrom.put(nextState, currentState);
                 }

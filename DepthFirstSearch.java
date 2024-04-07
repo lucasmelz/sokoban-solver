@@ -9,7 +9,7 @@ public class DepthFirstSearch<T> {
     private int maxStatesInMemory = 0; // Maximum number of states stored in memory
     private int expandedNodes = 0;
 
-    public List<T> search(ProblemSpace<T> problem, T initialState) {
+    public List<T> search(ProblemSpace<T> problem, T initialState, boolean visitRepeatedStates) {
         Deque<Node<T>> frontier = new LinkedList<>(); // Use Deque as a stack
         frontier.push(new Node<>(initialState, null, 0)); // Push the initial node onto the stack
 
@@ -33,11 +33,13 @@ public class DepthFirstSearch<T> {
             expandedNodes += successors.size();
 
             for (Node<T> successor : successors) {
-                // To test with repeated states, comment out the if condition and push all
-                // successors to the stack
-                if (!visited.contains(successor.getState())) {
-                    frontier.push(successor); // Push successors onto the stack
+
+                if (visitRepeatedStates) {
+                    frontier.push(successor); // Push all successors onto the stack
+                } else if (!visited.contains(successor.getState())) {
+                    frontier.push(successor); // Push only non-visited successors onto the stack
                 }
+
             }
 
             // Update maximum states in memory counter

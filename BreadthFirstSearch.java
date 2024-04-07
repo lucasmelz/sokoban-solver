@@ -9,7 +9,7 @@ public class BreadthFirstSearch<T> {
     private int maxStatesInMemory = 0; // Maximum number of states stored in memory
     private int expandedNodes = 0;
 
-    public List<T> search(ProblemSpace<T> problem, T initialState) {
+    public List<T> search(ProblemSpace<T> problem, T initialState, boolean visitRepeatedStates) {
         Queue<Node<T>> frontier = new LinkedList<>();
         frontier.add(new Node<>(initialState, null, 0)); // Initial node, with no parent and zero cost
 
@@ -33,15 +33,15 @@ public class BreadthFirstSearch<T> {
             List<Node<T>> successors = problem.generateSuccessors(currentNode);
             expandedNodes += successors.size();
 
-            for (Node<T> successor : successors) {
-                if (!visited.contains(successor.getState())) {
-                    frontier.add(successor);
+            if (visitRepeatedStates) {
+                frontier.addAll(successors);
+            } else {
+                for (Node<T> successor : successors) {
+                    if (!visited.contains(successor.getState())) {
+                        frontier.add(successor); // Add only non-visited successors to the queue
+                    }
                 }
             }
-
-            // If you want to visit repeated stated, comment the for loop above and
-            // uncomment the line below
-            // frontier.addAll(successors);
 
             // Update maximum states in memory counter
             maxStatesInMemory = Math.max(maxStatesInMemory, frontier.size());
